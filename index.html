@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trap Coach</title>
+    <meta name="theme-color" content="#b5e6e0">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme (Material 3 Teal) */
+            --md-sys-color-primary: #006a62;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #72f8ea;
+            --md-sys-color-on-primary-container: #00201d;
+            --md-sys-color-secondary: #4a6360;
+            --md-sys-color-on-secondary: #ffffff;
+            --md-sys-color-secondary-container: #cde8e4;
+            --md-sys-color-on-secondary-container: #051f1e;
+            --md-sys-color-tertiary: #476179;
+            --md-sys-color-on-tertiary: #ffffff;
+            --md-sys-color-tertiary-container: #cde5ff;
+            --md-sys-color-on-tertiary-container: #001d32;
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-on-error: #ffffff;
+            --md-sys-color-background: #fafdfc;
+            --md-sys-color-on-background: #191c1c;
+            --md-sys-color-surface: #fafdfc;
+            --md-sys-color-on-surface: #191c1c;
+            --md-sys-color-surface-variant: #dbe5e2;
+            --md-sys-color-on-surface-variant: #3f4947;
+            --md-sys-color-outline: #6f7977;
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+        }
+
+        .material-button {
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
+            border-radius: 20px; /* M3 full radius for buttons */
+        }
+        .material-button:active {
+            transform: scale(0.98);
+        }
+        .material-button-filled {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+        .material-button-filled:hover {
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12);
+        }
+        .material-button-tonal {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+        .material-button-tonal:hover {
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12);
+        }
+        .material-card {
+             background-color: var(--md-sys-color-surface);
+             color: var(--md-sys-color-on-surface);
+             border-radius: 16px;
+             box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .hit-button {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .loss-button {
+            background-color: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error);
+        }
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48
+        }
+
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: var(--md-sys-color-on-surface);
+            color: var(--md-sys-color-surface);
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="antialiased h-screen w-screen overflow-hidden">
+
+    <div id="app" class="h-full w-full flex flex-col">
+        <!-- Header -->
+        <header class="p-4 flex items-center justify-between" style="background-color: var(--md-sys-color-surface-variant);">
+             <h1 class="text-xl font-bold" style="color: var(--md-sys-color-on-surface-variant);">Trap Coach</h1>
+             <button id="home-button" class="material-symbols-outlined hidden">home</button>
+        </header>
+
+        <main class="flex-grow p-4 overflow-y-auto">
+            <!-- Home Screen -->
+            <section id="homeScreen" class="flex flex-col gap-6">
+                <div class="material-card p-6 flex flex-col items-center text-center">
+                    <span class="material-symbols-outlined text-5xl mb-2" style="color:var(--md-sys-color-primary);">edit_note</span>
+                    <h2 class="text-lg font-semibold mb-2" style="color:var(--md-sys-color-on-surface-variant);">Start a New Game</h2>
+                    <p class="mb-4 text-sm" style="color:var(--md-sys-color-on-surface-variant);">Choose how you want to record your shots.</p>
+                    <button id="startAsYouGo" class="material-button material-button-filled w-full py-3 mb-2">Record As You Go</button>
+                    <button id="startRecordRound" class="material-button material-button-tonal w-full py-3">Record a Full Round</button>
+                </div>
+
+                <div class="material-card p-6">
+                    <h2 class="text-lg font-semibold mb-4 text-center" style="color:var(--md-sys-color-on-surface-variant);">Game History</h2>
+                    <div id="gameHistoryContainer" class="space-y-3 mb-4">
+                        <!-- History will be loaded here -->
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="importButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">upload</span> Import
+                        </button>
+                        <button id="exportButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">download</span> Export
+                        </button>
+                    </div>
+                    <input type="file" id="csvFileInput" class="hidden" accept=".csv">
+                </div>
+            </section>
+
+            <!-- Record As You Go Screen -->
+            <section id="asYouGoScreen" class="hidden h-full">
+                <div class="flex flex-col h-full gap-2">
+                    <div id="asYouGoStatus" class="text-center p-2 material-card">Round 1, Shot 1</div>
+                    <button id="hitButton" class="hit-button flex-grow rounded-lg flex justify-center items-center text-4xl font-bold">HIT</button>
+                    <button id="lossButton" class="loss-button flex-grow rounded-lg flex justify-center items-center text-4xl font-bold">LOSS</button>
+                </div>
+            </section>
+
+            <!-- Record a Round Screen -->
+            <section id="recordRoundScreen" class="hidden">
+                 <div class="material-card p-6 flex flex-col items-center text-center">
+                    <h2 id="recordRoundStatus" class="text-2xl font-bold mb-4">Record Round 1</h2>
+                    <p class="mb-6" style="color:var(--md-sys-color-on-surface-variant);">How many targets did you hit?</p>
+                    <div id="roundSelector" class="grid grid-cols-3 gap-4 w-full">
+                        <button data-hits="0" class="material-button material-button-tonal p-4 text-2xl">0</button>
+                        <button data-hits="1" class="material-button material-button-tonal p-4 text-2xl">1</button>
+                        <button data-hits="2" class="material-button material-button-tonal p-4 text-2xl">2</button>
+                        <button data-hits="3" class="material-button material-button-tonal p-4 text-2xl">3</button>
+                        <button data-hits="4" class="material-button material-button-tonal p-4 text-2xl">4</button>
+                        <button data-hits="5" class="material-button material-button-tonal p-4 text-2xl">5</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Summary Screen -->
+            <section id="summaryScreen" class="hidden">
+                <div class="material-card p-6 flex flex-col items-center">
+                    <h2 class="text-3xl font-bold mb-2">Game Over!</h2>
+                    <p id="finalScore" class="text-xl mb-6" style="color:var(--md-sys-color-secondary);">Total Score: 20/25</p>
+                    <div id="summaryDetails" class="w-full space-y-3">
+                        <!-- Summary details will be injected here -->
+                    </div>
+                    <button id="newGameButton" class="material-button material-button-filled w-full py-3 mt-6">Start New Game</button>
+                </div>
+            </section>
+        </main>
+        <div id="snackbar"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- PWA Service Worker Registration ---
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(registration => console.log('ServiceWorker registration successful'))
+                        .catch(err => console.log('ServiceWorker registration failed: ', err));
+                });
+            }
+
+            // --- State and Constants ---
+            const STORAGE_KEY = 'trapCoachGames';
+            let appState = {
+                mode: 'home', // home, asYouGo, recordRound, summary
+                game: null, 
+            };
+            
+            const createNewGame = () => ({
+                rounds: Array(5).fill(null).map(() => ({ shots: Array(5).fill(null) })),
+                currentRound: 0,
+                currentShot: 0,
+                startTime: new Date().toISOString()
+            });
+
+            // --- UI Selectors ---
+            const screens = {
+                home: document.getElementById('homeScreen'),
+                asYouGo: document.getElementById('asYouGoScreen'),
+                recordRound: document.getElementById('recordRoundScreen'),
+                summary: document.getElementById('summaryScreen')
+            };
+            const homeButton = document.getElementById('home-button');
+            const newGameButton = document.getElementById('newGameButton');
+            const gameHistoryContainer = document.getElementById('gameHistoryContainer');
+            const snackbar = document.getElementById('snackbar');
+            const csvFileInput = document.getElementById('csvFileInput');
+
+            // --- UI Helpers ---
+            const showToast = (message) => {
+                snackbar.textContent = message;
+                snackbar.classList.add('show');
+                setTimeout(() => { snackbar.classList.remove('show'); }, 3000);
+            };
+
+            // --- Local Storage Functions ---
+            const saveGame = (gameData) => {
+                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                games.push(gameData);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
+            };
+
+            const loadGames = () => {
+                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                gameHistoryContainer.innerHTML = ''; 
+
+                if (games.length === 0) {
+                    gameHistoryContainer.innerHTML = `<p class="text-center" style="color:var(--md-sys-color-on-surface-variant);">No games recorded yet.</p>`;
+                    return;
+                }
+
+                games.slice().reverse().forEach(game => {
+                    const totalHits = game.rounds.reduce((total, round) => total + round.shots.filter(s => s === 1).length, 0);
+                    const gameDate = new Date(game.startTime);
+                    const formattedDate = gameDate.toLocaleDateString(undefined, {
+                        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    const gameItem = document.createElement('div');
+                    gameItem.className = 'flex items-center justify-between p-3 rounded-lg cursor-pointer hover:opacity-80 transition-opacity';
+                    gameItem.style.backgroundColor = 'var(--md-sys-color-secondary-container)';
+                    gameItem.dataset.gameId = game.startTime;
+                    gameItem.innerHTML = `
+                        <div><p class="font-bold text-lg">${totalHits}/25</p><p class="text-sm">${formattedDate}</p></div>
+                        <span class="material-symbols-outlined">chevron_right</span>`;
+                    gameHistoryContainer.appendChild(gameItem);
+                });
+            };
+            
+            // --- Render Function ---
+            const render = () => {
+                Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+                if (screens[appState.mode]) screens[appState.mode].classList.remove('hidden');
+                homeButton.classList.toggle('hidden', appState.mode === 'home');
+
+                if (appState.mode === 'asYouGo') updateAsYouGoStatus();
+                if (appState.mode === 'recordRound') updateRecordRoundStatus();
+                if (appState.mode === 'summary') renderSummary(appState.game);
+                if (appState.mode === 'home') loadGames(); 
+            };
+
+            // --- Update UI Functions ---
+            const updateAsYouGoStatus = () => {
+                document.getElementById('asYouGoStatus').textContent = `Round ${appState.game.currentRound + 1}, Shot ${appState.game.currentShot + 1}`;
+            };
+            
+            const updateRecordRoundStatus = () => {
+                document.getElementById('recordRoundStatus').textContent = `Record Round ${appState.game.currentRound + 1}`;
+            };
+
+            const renderSummary = (game) => {
+                const detailsContainer = document.getElementById('summaryDetails');
+                detailsContainer.innerHTML = '';
+                let totalHits = 0;
+
+                game.rounds.forEach((round, index) => {
+                    const roundHits = round.shots.filter(shot => shot === 1).length;
+                    totalHits += roundHits;
+                    const roundDiv = document.createElement('div');
+                    roundDiv.className = 'flex items-center justify-between p-3 rounded-lg';
+                    roundDiv.style.backgroundColor = 'var(--md-sys-color-surface-variant)';
+                    let roundIcons = round.shots.map(shot => {
+                        const icon = shot === 1 ? 'check_circle' : 'cancel';
+                        const color = shot === 1 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)';
+                        return `<span class="material-symbols-outlined" style="color:${color}; font-variation-settings: 'FILL' 1;">${icon}</span>`;
+                    }).join('');
+                    roundDiv.innerHTML = `<span class="font-bold text-lg">Round ${index + 1}</span><div class="flex gap-2">${roundIcons}</div><span class="font-bold text-lg">${roundHits}/5</span>`;
+                    detailsContainer.appendChild(roundDiv);
+                });
+                document.getElementById('finalScore').textContent = `Total Score: ${totalHits}/25`;
+            };
+
+            // --- Game Logic ---
+            const advanceShot = () => {
+                if (appState.game.currentShot < 4) appState.game.currentShot++;
+                else advanceRound();
+            };
+            
+            const advanceRound = () => {
+                if (appState.game.currentRound < 4) {
+                    appState.game.currentRound++;
+                    appState.game.currentShot = 0;
+                } else finishGame();
+            };
+            
+            const finishGame = () => {
+                 saveGame(appState.game);
+                 appState.mode = 'summary';
+                 render();
+            };
+
+            const resetToHome = () => {
+                appState.mode = 'home';
+                appState.game = null;
+                render();
+            };
+
+            // --- CSV Import/Export Logic ---
+            const exportToCSV = () => {
+                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                if (games.length === 0) {
+                    showToast('No games to export.');
+                    return;
+                }
+                const headers = ["game_start_time", "round_number", "shot_number", "result"];
+                let csvRows = [headers.join(",")];
+                games.forEach(game => {
+                    game.rounds.forEach((round, roundIndex) => {
+                        round.shots.forEach((shot, shotIndex) => {
+                            csvRows.push([game.startTime, roundIndex + 1, shotIndex + 1, shot].join(","));
+                        });
+                    });
+                });
+                const csvString = csvRows.join("\r\n");
+                const blob = new Blob([csvString], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('href', url);
+                a.setAttribute('download', `trap_coach_log_${new Date().toISOString().slice(0,10)}.csv`);
+                a.click();
+            };
+
+            const importFromCSV = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    try {
+                        const rows = e.target.result.split(/\r\n|\n/).filter(row => row.trim());
+                        if (rows.length < 2) throw new Error('CSV is empty or invalid.');
+                        
+                        const header = rows.shift().split(',');
+                        if (header[0] !== 'game_start_time' || header[1] !== 'round_number') {
+                            throw new Error('Invalid CSV headers.');
+                        }
+
+                        const importedGames = {};
+                        rows.forEach(row => {
+                            const [startTime, roundNum, shotNum, result] = row.split(',');
+                            if (!importedGames[startTime]) {
+                                importedGames[startTime] = {
+                                    startTime: startTime,
+                                    rounds: Array(5).fill(null).map(() => ({ shots: Array(5).fill(null) }))
+                                };
+                            }
+                            const game = importedGames[startTime];
+                            const roundIndex = parseInt(roundNum, 10) - 1;
+                            const shotIndex = parseInt(shotNum, 10) - 1;
+                            if (roundIndex >= 0 && roundIndex < 5 && shotIndex >= 0 && shotIndex < 5) {
+                                game.rounds[roundIndex].shots[shotIndex] = result === '' ? null : parseInt(result, 10);
+                            }
+                        });
+
+                        const existingGames = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                        const existingGameIds = new Set(existingGames.map(g => g.startTime));
+                        const newGames = Object.values(importedGames).filter(g => !existingGameIds.has(g.startTime));
+                        
+                        if (newGames.length === 0) {
+                            showToast('No new games found to import.');
+                            return;
+                        }
+
+                        const mergedGames = [...existingGames, ...newGames];
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedGames));
+                        loadGames();
+                        showToast(`Successfully imported ${newGames.length} new game(s).`);
+                    } catch (error) {
+                        showToast(`Import failed: ${error.message}`);
+                    } finally {
+                        // Reset file input to allow importing the same file again
+                        event.target.value = '';
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            // --- Event Listeners ---
+            document.getElementById('startAsYouGo').addEventListener('click', () => { appState.mode = 'asYouGo'; appState.game = createNewGame(); render(); });
+            document.getElementById('startRecordRound').addEventListener('click', () => { appState.mode = 'recordRound'; appState.game = createNewGame(); render(); });
+            homeButton.addEventListener('click', resetToHome);
+            newGameButton.addEventListener('click', resetToHome);
+            document.getElementById('hitButton').addEventListener('click', () => { appState.game.rounds[appState.game.currentRound].shots[appState.game.currentShot] = 1; advanceShot(); render(); });
+            document.getElementById('lossButton').addEventListener('click', () => { appState.game.rounds[appState.game.currentRound].shots[appState.game.currentShot] = 0; advanceShot(); render(); });
+            document.getElementById('roundSelector').addEventListener('click', (e) => {
+                if (e.target.matches('button[data-hits]')) {
+                    const hits = parseInt(e.target.dataset.hits, 10);
+                    for(let i = 0; i < 5; i++) appState.game.rounds[appState.game.currentRound].shots[i] = i < hits ? 1 : 0;
+                    advanceRound(); render();
+                }
+            });
+            gameHistoryContainer.addEventListener('click', (e) => {
+                const gameItem = e.target.closest('[data-game-id]');
+                if (gameItem) {
+                    const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                    const selectedGame = games.find(g => g.startTime === gameItem.dataset.gameId);
+                    if (selectedGame) { appState.game = selectedGame; appState.mode = 'summary'; render(); }
+                }
+            });
+            document.getElementById('exportButton').addEventListener('click', exportToCSV);
+            document.getElementById('importButton').addEventListener('click', () => csvFileInput.click());
+            csvFileInput.addEventListener('change', importFromCSV);
+
+            // --- Initial Render ---
+            render();
+        });
+    </script>
+</body>
+</html>
+
+
