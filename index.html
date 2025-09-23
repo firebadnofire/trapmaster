@@ -7,11 +7,7 @@
     <meta name="theme-color" content="#b5e6e0">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             /* Light Theme (Material 3 Teal) */
@@ -39,14 +35,59 @@
         }
 
         body {
-            font-family: 'Roboto Flex', sans-serif;
+            font-family: sans-serif;
             background-color: var(--md-sys-color-background);
             color: var(--md-sys-color-on-background);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .flex-grow { flex-grow: 1; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .grid { display: grid; }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .hidden { display: none; }
+        .h-screen { height: 100vh; }
+        .w-screen { width: 100vw; }
+        .h-full { height: 100%; }
+        .w-full { width: 100%; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-y-auto { overflow-y: auto; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+        .text-center { text-align: center; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-5xl { font-size: 3rem; line-height: 1; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .cursor-pointer { cursor: pointer; }
+        .hover\:opacity-80:hover { opacity: 0.8; }
+        .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 
         .material-button {
             transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
-            border-radius: 20px; /* M3 full radius for buttons */
+            border-radius: 20px;
         }
         .material-button:active {
             transform: scale(0.98);
@@ -79,9 +120,9 @@
             background-color: var(--md-sys-color-error);
             color: var(--md-sys-color-on-error);
         }
-        .material-symbols-outlined {
-          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48
-        }
+        .icon-fill { fill: var(--md-sys-color-primary); }
+        .icon-small { width: 24px; height: 24px; }
+        .icon-large { width: 48px; height: 48px; }
 
         #snackbar {
             visibility: hidden;
@@ -106,20 +147,24 @@
         }
     </style>
 </head>
-<body class="antialiased h-screen w-screen overflow-hidden">
+<body class="h-screen w-screen overflow-hidden">
 
     <div id="app" class="h-full w-full flex flex-col">
         <!-- Header -->
         <header class="p-4 flex items-center justify-between" style="background-color: var(--md-sys-color-surface-variant);">
              <h1 class="text-xl font-bold" style="color: var(--md-sys-color-on-surface-variant);">Trap Coach</h1>
-             <button id="home-button" class="material-symbols-outlined hidden">home</button>
+             <button id="home-button" class="hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-fill"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
+            </button>
         </header>
 
         <main class="flex-grow p-4 overflow-y-auto">
             <!-- Home Screen -->
             <section id="homeScreen" class="flex flex-col gap-6">
                 <div class="material-card p-6 flex flex-col items-center text-center">
-                    <span class="material-symbols-outlined text-5xl mb-2" style="color:var(--md-sys-color-primary);">edit_note</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" class="icon-large mb-2" style="fill:var(--md-sys-color-primary);">
+                        <path d="M200-200h560v-440H200v440Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h360l80 80h200q33 0 56.5 23.5T880-680v440q0 33-23.5 56.5T800-200H200Zm0-80h560-560Zm0 0v-440 440Z"/>
+                    </svg>
                     <h2 class="text-lg font-semibold mb-2" style="color:var(--md-sys-color-on-surface-variant);">Start a New Game</h2>
                     <p class="mb-4 text-sm" style="color:var(--md-sys-color-on-surface-variant);">Choose how you want to record your shots.</p>
                     <button id="startAsYouGo" class="material-button material-button-filled w-full py-3 mb-2">Record As You Go</button>
@@ -132,14 +177,13 @@
                         <!-- History will be loaded here -->
                     </div>
                     <div class="flex gap-2">
-                        <button id="importButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined">upload</span> Import
-                        </button>
                         <button id="exportButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined">download</span> Export
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
+                                <path d="M480-320 280-520l56-56 104 104v-288h80v288l104-104 56 56-200 200ZM240-160q-33 0-56.5-23.5T160-240v-160h80v160h480v-160h80v160q0 33-23.5 56.5T720-160H240Z"/>
+                            </svg>
+                            Export
                         </button>
                     </div>
-                    <input type="file" id="csvFileInput" class="hidden" accept=".csv">
                 </div>
             </section>
 
@@ -188,7 +232,7 @@
             // --- PWA Service Worker Registration ---
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/service-worker.js')
+                    navigator.serviceWorker.register('service-worker.js')
                         .then(registration => console.log('ServiceWorker registration successful'))
                         .catch(err => console.log('ServiceWorker registration failed: ', err));
                 });
@@ -219,7 +263,6 @@
             const newGameButton = document.getElementById('newGameButton');
             const gameHistoryContainer = document.getElementById('gameHistoryContainer');
             const snackbar = document.getElementById('snackbar');
-            const csvFileInput = document.getElementById('csvFileInput');
 
             // --- UI Helpers ---
             const showToast = (message) => {
@@ -256,7 +299,9 @@
                     gameItem.dataset.gameId = game.startTime;
                     gameItem.innerHTML = `
                         <div><p class="font-bold text-lg">${totalHits}/25</p><p class="text-sm">${formattedDate}</p></div>
-                        <span class="material-symbols-outlined">chevron_right</span>`;
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" style="fill:var(--md-sys-color-on-secondary-container);">
+                            <path d="M504-480 320-664l56-56 184 184-184 184-56-56 184-184Z"/>
+                        </svg>`;
                     gameHistoryContainer.appendChild(gameItem);
                 });
             };
@@ -296,7 +341,9 @@
                     let roundIcons = round.shots.map(shot => {
                         const icon = shot === 1 ? 'check_circle' : 'cancel';
                         const color = shot === 1 ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)';
-                        return `<span class="material-symbols-outlined" style="color:${color}; font-variation-settings: 'FILL' 1;">${icon}</span>`;
+                        return `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" style="fill:${color};">
+                                <path d="${icon === 'check_circle' ? 'M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm86-224L452-414l-86 86-42-42 128-128 174 174-42 42Z' : 'M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-42-202L258-480l180-180 42 42-138 138 138 138-42 42Z'}"/>
+                            </svg>`;
                     }).join('');
                     roundDiv.innerHTML = `<span class="font-bold text-lg">Round ${index + 1}</span><div class="flex gap-2">${roundIcons}</div><span class="font-bold text-lg">${roundHits}/5</span>`;
                     detailsContainer.appendChild(roundDiv);
@@ -354,60 +401,6 @@
                 a.click();
             };
 
-            const importFromCSV = (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = e => {
-                    try {
-                        const rows = e.target.result.split(/\r\n|\n/).filter(row => row.trim());
-                        if (rows.length < 2) throw new Error('CSV is empty or invalid.');
-                        
-                        const header = rows.shift().split(',');
-                        if (header[0] !== 'game_start_time' || header[1] !== 'round_number') {
-                            throw new Error('Invalid CSV headers.');
-                        }
-
-                        const importedGames = {};
-                        rows.forEach(row => {
-                            const [startTime, roundNum, shotNum, result] = row.split(',');
-                            if (!importedGames[startTime]) {
-                                importedGames[startTime] = {
-                                    startTime: startTime,
-                                    rounds: Array(5).fill(null).map(() => ({ shots: Array(5).fill(null) }))
-                                };
-                            }
-                            const game = importedGames[startTime];
-                            const roundIndex = parseInt(roundNum, 10) - 1;
-                            const shotIndex = parseInt(shotNum, 10) - 1;
-                            if (roundIndex >= 0 && roundIndex < 5 && shotIndex >= 0 && shotIndex < 5) {
-                                game.rounds[roundIndex].shots[shotIndex] = result === '' ? null : parseInt(result, 10);
-                            }
-                        });
-
-                        const existingGames = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                        const existingGameIds = new Set(existingGames.map(g => g.startTime));
-                        const newGames = Object.values(importedGames).filter(g => !existingGameIds.has(g.startTime));
-                        
-                        if (newGames.length === 0) {
-                            showToast('No new games found to import.');
-                            return;
-                        }
-
-                        const mergedGames = [...existingGames, ...newGames];
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedGames));
-                        loadGames();
-                        showToast(`Successfully imported ${newGames.length} new game(s).`);
-                    } catch (error) {
-                        showToast(`Import failed: ${error.message}`);
-                    } finally {
-                        // Reset file input to allow importing the same file again
-                        event.target.value = '';
-                    }
-                };
-                reader.readAsText(file);
-            };
-
             // --- Event Listeners ---
             document.getElementById('startAsYouGo').addEventListener('click', () => { appState.mode = 'asYouGo'; appState.game = createNewGame(); render(); });
             document.getElementById('startRecordRound').addEventListener('click', () => { appState.mode = 'recordRound'; appState.game = createNewGame(); render(); });
@@ -431,8 +424,6 @@
                 }
             });
             document.getElementById('exportButton').addEventListener('click', exportToCSV);
-            document.getElementById('importButton').addEventListener('click', () => csvFileInput.click());
-            csvFileInput.addEventListener('change', importFromCSV);
 
             // --- Initial Render ---
             render();
@@ -440,5 +431,4 @@
     </script>
 </body>
 </html>
-
 

@@ -1,8 +1,10 @@
 const CACHE_NAME = 'trap-coach-cache-v1';
 const urlsToCache = [
   '/',
-  '/index.html',
-  // You would also add your icon paths here, e.g., '/icons/icon-192x192.png'
+  'index.html',
+  'manifest.json',
+  'icons/icon-192x192.png',
+  'icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {
