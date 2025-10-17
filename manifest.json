@@ -1,8 +1,9 @@
 {
   "name": "Trap Coach",
   "short_name": "TrapCoach",
-  "start_url": ".",
-  "display": "standalone",
+  "start_url": "/trapmaster/index.html",
+  "scope": "/trapmaster/",
+  "display": "fullscreen",
   "background_color": "#fafdfc",
   "theme_color": "#b5e6e0",
   "description": "A simple app to track trap shooting scores.",
