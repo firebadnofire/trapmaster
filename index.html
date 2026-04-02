@@ -176,14 +176,27 @@
                     <div id="gameHistoryContainer" class="space-y-3 mb-4">
                         <!-- History will be loaded here -->
                     </div>
-                    <div class="flex gap-2">
+                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
                         <button id="exportButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
                                 <path d="M480-320 280-520l56-56 104 104v-288h80v288l104-104 56 56-200 200ZM240-160q-33 0-56.5-23.5T160-240v-160h80v160h480v-160h80v160q0 33-23.5 56.5T720-160H240Z"/>
                             </svg>
                             Export
                         </button>
+                        <button id="importButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
+                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                            </svg>
+                            Import
+                        </button>
+                        <button id="clearButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2" style="background-color:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-error-container);">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>
+                            Clear
+                        </button>
                     </div>
+                    <input id="importInput" type="file" accept=".csv,text/csv" class="hidden">
                 </div>
             </section>
 
@@ -263,6 +276,7 @@
             const homeButton = document.getElementById('home-button');
             const newGameButton = document.getElementById('newGameButton');
             const gameHistoryContainer = document.getElementById('gameHistoryContainer');
+            const importInput = document.getElementById('importInput');
             const snackbar = document.getElementById('snackbar');
 
             // --- UI Helpers ---
@@ -273,14 +287,27 @@
             };
 
             // --- Local Storage Functions ---
-            const saveGame = (gameData) => {
-                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                games.push(gameData);
+            const getSavedGames = () => {
+                try {
+                    const games = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                    return Array.isArray(games) ? games : [];
+                } catch (error) {
+                    return [];
+                }
+            };
+
+            const setSavedGames = (games) => {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
             };
 
+            const saveGame = (gameData) => {
+                const games = getSavedGames();
+                games.push(gameData);
+                setSavedGames(games);
+            };
+
             const loadGames = () => {
-                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                const games = getSavedGames();
                 gameHistoryContainer.innerHTML = ''; 
 
                 if (games.length === 0) {
@@ -377,9 +404,9 @@
                 render();
             };
 
-            // --- CSV Import/Export Logic ---
+            // --- Saved Data Import/Export Logic ---
             const exportToCSV = () => {
-                const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                const games = getSavedGames();
                 if (games.length === 0) {
                     showToast('No games to export.');
                     return;
@@ -400,6 +427,97 @@
                 a.setAttribute('href', url);
                 a.setAttribute('download', `trap_coach_log_${new Date().toISOString().slice(0,10)}.csv`);
                 a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 0);
+            };
+
+            const createImportedGame = (startTime) => ({
+                rounds: Array(5).fill(null).map(() => ({ shots: Array(5).fill(null) })),
+                currentRound: 4,
+                currentShot: 4,
+                startTime
+            });
+
+            const importFromCSV = async (file) => {
+                const csvText = await file.text();
+                const rows = csvText.split(/\r?\n/).map(row => row.trim()).filter(Boolean);
+                const expectedHeader = 'game_start_time,round_number,shot_number,result';
+                const normalizedHeader = rows[0]?.replace(/^\uFEFF/, '').toLowerCase();
+
+                if (rows.length < 2 || normalizedHeader !== expectedHeader) {
+                    showToast('Invalid import file.');
+                    return;
+                }
+
+                try {
+                    const gamesById = new Map();
+
+                    rows.slice(1).forEach((row) => {
+                        const columns = row.split(',').map(value => value.trim());
+                        if (columns.length !== 4) throw new Error('Invalid column count');
+
+                        const [startTime, roundValue, shotValue, resultValue] = columns;
+                        const roundNumber = Number.parseInt(roundValue, 10);
+                        const shotNumber = Number.parseInt(shotValue, 10);
+                        const result = Number.parseInt(resultValue, 10);
+
+                        if (!startTime || Number.isNaN(Date.parse(startTime))) throw new Error('Invalid game time');
+                        if (roundNumber < 1 || roundNumber > 5) throw new Error('Invalid round number');
+                        if (shotNumber < 1 || shotNumber > 5) throw new Error('Invalid shot number');
+                        if (![0, 1].includes(result)) throw new Error('Invalid shot result');
+
+                        if (!gamesById.has(startTime)) {
+                            gamesById.set(startTime, {
+                                game: createImportedGame(startTime),
+                                seenShots: new Set()
+                            });
+                        }
+
+                        const importedGame = gamesById.get(startTime);
+                        const shotKey = `${roundNumber}-${shotNumber}`;
+                        if (importedGame.seenShots.has(shotKey)) throw new Error('Duplicate shot entry');
+
+                        importedGame.seenShots.add(shotKey);
+                        importedGame.game.rounds[roundNumber - 1].shots[shotNumber - 1] = result;
+                    });
+
+                    const importedGames = Array.from(gamesById.values()).map(({ game, seenShots }) => {
+                        if (seenShots.size !== 25) throw new Error('Incomplete game data');
+                        return game;
+                    });
+                    const existingGames = getSavedGames();
+                    const mergedGames = new Map(existingGames.map(game => [game.startTime, game]));
+
+                    importedGames.forEach((game) => {
+                        mergedGames.set(game.startTime, game);
+                    });
+
+                    const sortedGames = Array.from(mergedGames.values()).sort((left, right) => (
+                        new Date(left.startTime) - new Date(right.startTime)
+                    ));
+
+                    setSavedGames(sortedGames);
+                    loadGames();
+
+                    const importedLabel = importedGames.length === 1 ? 'game' : 'games';
+                    showToast(`Imported ${importedGames.length} ${importedLabel}.`);
+                } catch (error) {
+                    showToast('Import failed. Use a Trap Coach export file.');
+                }
+            };
+
+            const clearSavedHistory = () => {
+                if (getSavedGames().length === 0) {
+                    showToast('No saved games to clear.');
+                    return;
+                }
+
+                if (!window.confirm('Clear all saved game history? This cannot be undone.')) {
+                    return;
+                }
+
+                localStorage.removeItem(STORAGE_KEY);
+                resetToHome();
+                showToast('Saved game history cleared.');
             };
 
             // --- Event Listeners ---
@@ -419,12 +537,20 @@
             gameHistoryContainer.addEventListener('click', (e) => {
                 const gameItem = e.target.closest('[data-game-id]');
                 if (gameItem) {
-                    const games = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                    const games = getSavedGames();
                     const selectedGame = games.find(g => g.startTime === gameItem.dataset.gameId);
                     if (selectedGame) { appState.game = selectedGame; appState.mode = 'summary'; render(); }
                 }
             });
             document.getElementById('exportButton').addEventListener('click', exportToCSV);
+            document.getElementById('importButton').addEventListener('click', () => importInput.click());
+            importInput.addEventListener('change', async (event) => {
+                const [file] = event.target.files || [];
+                if (!file) return;
+                await importFromCSV(file);
+                event.target.value = '';
+            });
+            document.getElementById('clearButton').addEventListener('click', clearSavedHistory);
 
             // --- Initial Render ---
             render();
@@ -432,4 +558,3 @@
     </script>
 </body>
 </html>
-
