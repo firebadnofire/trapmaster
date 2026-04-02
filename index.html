@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trap Coach</title>
     <meta name="theme-color" content="#b5e6e0">
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     
@@ -208,6 +209,11 @@
         .icon-fill { fill: var(--md-sys-color-primary); }
         .icon-small { width: 24px; height: 24px; }
         .icon-large { width: 48px; height: 48px; }
+        .hero-icon {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+        }
 
         #snackbar {
             visibility: hidden;
@@ -273,9 +279,7 @@
             <!-- Home Screen -->
             <section id="homeScreen" class="flex flex-col gap-6">
                 <div class="material-card p-6 flex flex-col items-center text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48" class="icon-large mb-2" style="fill:var(--md-sys-color-primary);">
-                        <path d="M200-200h560v-440H200v440Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h360l80 80h200q33 0 56.5 23.5T880-680v440q0 33-23.5 56.5T800-200H200Zm0-80h560-560Zm0 0v-440 440Z"/>
-                    </svg>
+                    <img src="icons/icon-192x192.png" alt="" class="hero-icon mb-2">
                     <h2 class="text-lg font-semibold mb-2" style="color:var(--md-sys-color-on-surface-variant);">Start a New Game</h2>
                     <p class="mb-4 text-sm" style="color:var(--md-sys-color-on-surface-variant);">Choose how you want to record your shots.</p>
                     <div class="mode-option mb-2">
