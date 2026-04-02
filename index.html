@@ -35,11 +35,28 @@
         }
 
         body {
+            margin: 0;
             font-family: sans-serif;
             background-color: var(--md-sys-color-background);
             color: var(--md-sys-color-on-background);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            min-height: 100dvh;
+        }
+
+        button {
+            border: none;
+            font: inherit;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        h1, h2, p {
+            margin: 0;
         }
 
         .flex { display: flex; }
@@ -49,13 +66,15 @@
         .justify-center { justify-content: center; }
         .justify-between { justify-content: space-between; }
         .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
         .gap-4 { gap: 1rem; }
         .gap-6 { gap: 1.5rem; }
         .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .hidden { display: none; }
-        .h-screen { height: 100vh; }
-        .w-screen { width: 100vw; }
+        .h-screen { height: 100dvh; }
+        .w-screen { width: 100%; }
         .h-full { height: 100%; }
         .w-full { width: 100%; }
         .overflow-hidden { overflow: hidden; }
@@ -65,12 +84,18 @@
         .p-4 { padding: 1rem; }
         .p-6 { padding: 1.5rem; }
         .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
         .mb-2 { margin-bottom: 0.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
         .mb-4 { margin-bottom: 1rem; }
         .mb-6 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
         .mt-6 { margin-top: 1.5rem; }
+        .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
         .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
         .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
         .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
         .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
         .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
@@ -79,6 +104,7 @@
         .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
         .text-5xl { font-size: 3rem; line-height: 1; }
         .font-bold { font-weight: 700; }
+        .font-medium { font-weight: 500; }
         .font-semibold { font-weight: 600; }
         .rounded-lg { border-radius: 0.5rem; }
         .cursor-pointer { cursor: pointer; }
@@ -86,11 +112,24 @@
         .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 
         .material-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            min-height: 3.25rem;
             transition: background-color 0.3s, box-shadow 0.3s, transform 0.1s;
             border-radius: 20px;
+            cursor: pointer;
         }
         .material-button:active {
             transform: scale(0.98);
+        }
+        .material-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
         .material-button-filled {
             background-color: var(--md-sys-color-primary);
@@ -111,6 +150,52 @@
              color: var(--md-sys-color-on-surface);
              border-radius: 16px;
              box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .home-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
+            background-color: rgba(255,255,255,0.65);
+            cursor: pointer;
+        }
+        .history-action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+        .history-helper,
+        .history-meta,
+        .button-caption,
+        .destructive-note {
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .button-caption {
+            line-height: 1.35;
+        }
+        .mode-option {
+            width: 100%;
+        }
+        .mode-option .material-button {
+            width: 100%;
+        }
+        #gameHistoryContainer > [data-game-id] {
+            gap: 0.75rem;
+            min-height: 4.25rem;
+        }
+        #gameHistoryContainer > [data-game-id] > div {
+            min-width: 0;
+        }
+        #app header {
+            padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+            padding-right: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+        }
+        main {
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         }
         .hit-button {
             background-color: var(--md-sys-color-primary-container);
@@ -145,6 +230,32 @@
             visibility: visible;
             opacity: 1;
         }
+
+        @media (max-width: 520px) {
+            #app header,
+            main {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .material-card {
+                border-radius: 14px;
+            }
+
+            .history-action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #asYouGoScreen .hit-button,
+            #asYouGoScreen .loss-button {
+                font-size: 1.875rem;
+                line-height: 2.25rem;
+            }
+
+            #roundSelector {
+                gap: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden">
@@ -153,7 +264,7 @@
         <!-- Header -->
         <header class="p-4 flex items-center justify-between" style="background-color: var(--md-sys-color-surface-variant);">
              <h1 class="text-xl font-bold" style="color: var(--md-sys-color-on-surface-variant);">Trap Coach</h1>
-             <button id="home-button" class="hidden">
+             <button id="home-button" class="hidden home-button" aria-label="Return to the home screen">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-fill"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
             </button>
         </header>
@@ -167,34 +278,45 @@
                     </svg>
                     <h2 class="text-lg font-semibold mb-2" style="color:var(--md-sys-color-on-surface-variant);">Start a New Game</h2>
                     <p class="mb-4 text-sm" style="color:var(--md-sys-color-on-surface-variant);">Choose how you want to record your shots.</p>
-                    <button id="startAsYouGo" class="material-button material-button-filled w-full py-3 mb-2">Record As You Go</button>
-                    <button id="startRecordRound" class="material-button material-button-tonal w-full py-3">Record a Full Round</button>
+                    <div class="mode-option mb-2">
+                        <button id="startAsYouGo" class="material-button material-button-filled py-3">Track Shot-by-Shot</button>
+                        <p class="button-caption text-sm mt-2">Tap HIT or LOSS after each shot.</p>
+                    </div>
+                    <div class="mode-option">
+                        <button id="startRecordRound" class="material-button material-button-tonal py-3">Enter Round Totals</button>
+                        <p class="button-caption text-sm mt-2">Log each round by how many targets you hit.</p>
+                    </div>
                 </div>
 
                 <div class="material-card p-6">
                     <h2 class="text-lg font-semibold mb-4 text-center" style="color:var(--md-sys-color-on-surface-variant);">Game History</h2>
+                    <p id="historyMeta" class="history-meta text-sm text-center mb-4">No saved games on this device yet.</p>
                     <div id="gameHistoryContainer" class="space-y-3 mb-4">
                         <!-- History will be loaded here -->
                     </div>
-                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                        <button id="exportButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
-                                <path d="M480-320 280-520l56-56 104 104v-288h80v288l104-104 56 56-200 200ZM240-160q-33 0-56.5-23.5T160-240v-160h80v160h480v-160h80v160q0 33-23.5 56.5T720-160H240Z"/>
-                            </svg>
-                            Export
-                        </button>
-                        <button id="importButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
-                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
-                            </svg>
-                            Import
-                        </button>
-                        <button id="clearButton" class="material-button material-button-tonal w-full py-3 text-sm flex items-center justify-center gap-2" style="background-color:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-error-container);">
+                    <div class="space-y-2">
+                        <p class="history-helper text-sm text-left">Move your saved games between devices with Trap Coach CSV files.</p>
+                        <div class="history-action-grid">
+                            <button id="exportButton" class="material-button material-button-tonal w-full py-3 text-sm gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
+                                    <path d="M480-320 280-520l56-56 104 104v-288h80v288l104-104 56 56-200 200ZM240-160q-33 0-56.5-23.5T160-240v-160h80v160h480v-160h80v160q0 33-23.5 56.5T720-160H240Z"/>
+                                </svg>
+                                Export CSV
+                            </button>
+                            <button id="importButton" class="material-button material-button-tonal w-full py-3 text-sm gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-secondary-container);">
+                                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                                </svg>
+                                Import CSV
+                            </button>
+                        </div>
+                        <button id="clearButton" class="material-button material-button-tonal w-full py-3 text-sm gap-2" style="background-color:var(--md-sys-color-error);color:var(--md-sys-color-on-error);">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon-small" style="fill:var(--md-sys-color-on-error);">
                                 <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
                             </svg>
-                            Clear
+                            Clear Saved Games
                         </button>
+                        <p class="destructive-note text-xs text-left">Clearing removes all saved game history from this device after you confirm.</p>
                     </div>
                     <input id="importInput" type="file" accept=".csv,text/csv" class="hidden">
                 </div>
@@ -276,6 +398,9 @@
             const homeButton = document.getElementById('home-button');
             const newGameButton = document.getElementById('newGameButton');
             const gameHistoryContainer = document.getElementById('gameHistoryContainer');
+            const historyMeta = document.getElementById('historyMeta');
+            const exportButton = document.getElementById('exportButton');
+            const clearButton = document.getElementById('clearButton');
             const importInput = document.getElementById('importInput');
             const snackbar = document.getElementById('snackbar');
 
@@ -306,12 +431,27 @@
                 setSavedGames(games);
             };
 
+            const updateHistoryActions = (games) => {
+                const gameCount = games.length;
+                exportButton.disabled = gameCount === 0;
+                clearButton.disabled = gameCount === 0;
+
+                if (gameCount === 0) {
+                    historyMeta.textContent = 'No saved games on this device yet.';
+                    return;
+                }
+
+                const gameLabel = gameCount === 1 ? 'game' : 'games';
+                historyMeta.textContent = `${gameCount} saved ${gameLabel} on this device.`;
+            };
+
             const loadGames = () => {
                 const games = getSavedGames();
+                updateHistoryActions(games);
                 gameHistoryContainer.innerHTML = ''; 
 
                 if (games.length === 0) {
-                    gameHistoryContainer.innerHTML = `<p class="text-center" style="color:var(--md-sys-color-on-surface-variant);">No games recorded yet.</p>`;
+                    gameHistoryContainer.innerHTML = `<p class="text-center" style="color:var(--md-sys-color-on-surface-variant);">Finish a game to see it here.</p>`;
                     return;
                 }
 
@@ -542,7 +682,7 @@
                     if (selectedGame) { appState.game = selectedGame; appState.mode = 'summary'; render(); }
                 }
             });
-            document.getElementById('exportButton').addEventListener('click', exportToCSV);
+            exportButton.addEventListener('click', exportToCSV);
             document.getElementById('importButton').addEventListener('click', () => importInput.click());
             importInput.addEventListener('change', async (event) => {
                 const [file] = event.target.files || [];
@@ -550,7 +690,7 @@
                 await importFromCSV(file);
                 event.target.value = '';
             });
-            document.getElementById('clearButton').addEventListener('click', clearSavedHistory);
+            clearButton.addEventListener('click', clearSavedHistory);
 
             // --- Initial Render ---
             render();
